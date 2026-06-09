@@ -3,10 +3,9 @@
 import React, { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { Card } from '@/components/ui/card';
-import { ThemeToggle } from '@/components/ThemeToggle';
 import { LogoText } from '@/components/LogoText';
 import Link from 'next/link';
-import { ArrowLeft, TreeDeciduous, GitFork, TrendingUp, LineChart } from 'lucide-react';
+import { ArrowLeft, TreeDeciduous, GitFork, TrendingUp, LineChart, Sun, Moon } from 'lucide-react';
 import { CodeBlock } from '@/components/CodeBlock';
 
 const WebComponentWrapper = dynamic(() => import('@/components/WebComponentWrapper'), { ssr: false });
@@ -18,7 +17,7 @@ function getCodeSnippet(componentName: string) {
       language: "tsx",
       code: `import React, { useEffect, useRef } from 'react';
 import 'skjson-vsl';
-import modelData from './model.json';
+import modelData from './${componentName.replace('skjson-', '')}.json';
 
 export default function MyVisualization() {
   const visRef = useRef(null);
@@ -47,7 +46,7 @@ export default function MyVisualization() {
 
 <script setup>
 import 'skjson-vsl';
-import modelData from './model.json';
+import modelData from './${componentName.replace('skjson-', '')}.json';
 </script>`
     },
     {
@@ -55,7 +54,7 @@ import modelData from './model.json';
       language: "svelte",
       code: `<script>
   import 'skjson-vsl';
-  import modelData from './model.json';
+  import modelData from './${componentName.replace('skjson-', '')}.json';
 </script>
 
 <div class="visualization-container">
@@ -74,7 +73,7 @@ import modelData from './model.json';
   <${componentName} id="my-vis"></${componentName}>
 
   <script type="module">
-    import modelData from './model.json' with { type: 'json' };
+    import modelData from './${componentName.replace('skjson-', '')}.json' with { type: 'json' };
     const vis = document.getElementById('my-vis');
     vis.model = modelData;
   </script>
@@ -98,15 +97,96 @@ const COLOR_MAP: Record<string, string> = {
   linear_model: 'bg-violet-500',
 };
 
+function ComponentShowcase({ model, modelData, Icon }: any) {
+  const [activeTab, setActiveTab] = useState<'preview' | 'code'>('preview');
+  const [isLightMode, setIsLightMode] = useState(false);
+
+  return (
+    <div className={`flex flex-col gap-6 ${isLightMode ? 'showcase-light text-foreground' : ''}`}>
+      {/* Title header */}
+      <div>
+        <div className="flex items-center gap-3 mb-2">
+          <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-primary/10 text-primary border border-primary/20">
+            <Icon className="w-5 h-5" />
+          </div>
+          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">{model.title}</h2>
+        </div>
+        <p className="text-muted-foreground max-w-2xl">{model.description}</p>
+      </div>
+
+      {/* Tailwind UI Style Card */}
+      <div className="rounded-xl border border-border shadow-sm overflow-hidden bg-card">
+        {/* Card Header / Tabs */}
+        <div className="flex items-center justify-between border-b border-border bg-muted/30 px-4 py-3">
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setActiveTab('preview')}
+              className={`px-4 py-1.5 text-sm font-medium rounded-md transition-all ${
+                activeTab === 'preview'
+                  ? 'bg-background shadow-sm border border-border text-foreground'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              Preview
+            </button>
+            <button
+              onClick={() => setActiveTab('code')}
+              className={`px-4 py-1.5 text-sm font-medium rounded-md transition-all ${
+                activeTab === 'code'
+                  ? 'bg-background shadow-sm border border-border text-foreground'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              Code
+            </button>
+          </div>
+          <button
+            onClick={() => setIsLightMode(!isLightMode)}
+            className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors bg-background border border-border shadow-sm"
+            title={`Switch to ${isLightMode ? 'Dark' : 'Light'} Mode`}
+          >
+            {isLightMode ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
+          </button>
+        </div>
+
+        {/* Card Body */}
+        <div className="p-0 bg-background relative min-h-[500px] flex flex-col">
+          {activeTab === 'preview' ? (
+            <div className="w-full h-full min-h-[500px] flex-1 overflow-hidden flex flex-col">
+               {model.predictive && (
+                  <div className="p-4 bg-muted/30 border-b border-border text-sm text-muted-foreground">
+                    <span className="font-semibold text-primary mr-2">Interactive:</span>
+                    Adjust input features and watch the model traverse to a prediction.
+                  </div>
+               )}
+               <WebComponentWrapper
+                 component={model.predictive || model.nonPredictive}
+                 model={modelData}
+               />
+            </div>
+          ) : (
+            <div className="flex-1 flex flex-col w-full h-full min-h-[500px]">
+              <CodeBlock tabs={getCodeSnippet(model.predictive || model.nonPredictive)} className="flex-1 w-full border-0 rounded-none" />
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function ComponentsPage() {
-  const [modelData, setModelData] = useState<any>(null);
+  const [modelsData, setModelsData] = useState<Record<string, any>>({});
   const [activeSection, setActiveSection] = useState<string>('');
 
   useEffect(() => {
-    fetch('/model.json')
-      .then(res => res.json())
-      .then(data => setModelData(data))
-      .catch(err => console.error("Failed to load model.json:", err));
+    const modelFiles = ['decision_tree.json', 'random_forest.json', 'gradient_boosting.json', 'linear_model.json'];
+    modelFiles.forEach(file => {
+      fetch(`/${file}`)
+        .then(res => res.json())
+        .then(data => setModelsData(prev => ({ ...prev, [file.replace('.json', '')]: data })))
+        .catch(err => console.error(`Failed to load ${file}:`, err));
+    });
   }, []);
 
   // Intersection observer for sidebar highlight
@@ -122,7 +202,7 @@ export default function ComponentsPage() {
       { rootMargin: '-30% 0px -60% 0px' }
     );
 
-    const sections = document.querySelectorAll('[data-timeline-entry]');
+    const sections = document.querySelectorAll('[data-showcase-entry]');
     sections.forEach((section) => observer.observe(section));
     return () => observer.disconnect();
   }, []);
@@ -159,7 +239,7 @@ export default function ComponentsPage() {
   ];
 
   return (
-    <div className="min-h-screen text-foreground flex flex-col overflow-x-hidden scroll-smooth bg-background normal-case">
+    <div className="min-h-screen text-foreground flex flex-col scroll-smooth bg-background normal-case">
       {/* Header */}
       <header className="w-full px-6 py-4 fixed top-0 left-0 right-0 flex justify-between items-center z-50 bg-background/80 backdrop-blur-md border-b border-border">
         <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
@@ -169,7 +249,6 @@ export default function ComponentsPage() {
           </h3>
         </Link>
         <div className="flex items-center gap-4">
-          <ThemeToggle />
         </div>
       </header>
 
@@ -198,7 +277,7 @@ export default function ComponentsPage() {
           </nav>
         </aside>
 
-        {/* Main Content — Timeline */}
+        {/* Main Content */}
         <main className="flex-1 px-4 lg:px-0">
           {/* Hero */}
           <div className="mb-16 pt-4">
@@ -209,96 +288,23 @@ export default function ComponentsPage() {
             </p>
           </div>
 
-          {/* Timeline */}
-          <div className="relative">
-            {/* Vertical timeline line */}
-            <div className="absolute left-[15px] top-0 bottom-0 w-px bg-border hidden md:block" />
-
-            {models.map((model, idx) => {
+          {/* Components List */}
+          <div className="flex flex-col gap-24">
+            {models.map((model) => {
               const Icon = ICON_MAP[model.id];
-              const dotColor = COLOR_MAP[model.id];
 
               return (
                 <section
                   key={model.id}
                   id={model.id}
-                  data-timeline-entry
-                  className="scroll-mt-32 relative md:pl-16 pb-24 last:pb-0"
+                  data-showcase-entry
+                  className="scroll-mt-32"
                 >
-                  {/* Timeline dot */}
-                  <div className={`absolute left-0 top-1 hidden md:flex items-center justify-center w-[31px] h-[31px] rounded-full border-4 border-background ${dotColor} shadow-md`}>
-                    <Icon className="w-3.5 h-3.5 text-white" />
-                  </div>
-
-                  {/* Entry content */}
-                  <div className="flex flex-col gap-10">
-                    {/* Title header */}
-                    <div>
-                      <div className="flex items-center gap-3 mb-2">
-                        <div className="md:hidden flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground">
-                          <Icon className="w-4 h-4" />
-                        </div>
-                        <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">{model.title}</h2>
-                      </div>
-                      <p className="text-muted-foreground max-w-xl">{model.description}</p>
-                    </div>
-
-                    {/* 1. Non-Predictive Viewer */}
-                    <div className="flex flex-col gap-4">
-                      <div className="flex items-center gap-2">
-                        <span className="flex items-center justify-center w-6 h-6 rounded-full bg-muted text-muted-foreground text-xs font-bold">1</span>
-                        <h3 className="text-lg font-semibold">Viewer</h3>
-                      </div>
-                      <p className="text-sm text-muted-foreground -mt-2">A read-only component for visualizing the model structure. Supports click-and-drag panning.</p>
-                      <Card className="w-full p-0 border-border bg-card overflow-hidden">
-                        <div className="w-full min-h-[500px] bg-background overflow-hidden relative">
-                          <WebComponentWrapper
-                            component={model.nonPredictive}
-                            model={modelData}
-                          />
-                        </div>
-                      </Card>
-                    </div>
-
-                    {/* 2. Viewer Code */}
-                    <div className="flex flex-col gap-4">
-                      <div className="flex items-center gap-2">
-                        <span className="flex items-center justify-center w-6 h-6 rounded-full bg-muted text-muted-foreground text-xs font-bold">2</span>
-                        <h3 className="text-lg font-semibold">Viewer Code</h3>
-                      </div>
-                      <CodeBlock tabs={getCodeSnippet(model.nonPredictive)} />
-                    </div>
-
-                    {/* 3. Interactive Predictive */}
-                    <div className="flex flex-col gap-4">
-                      <div className="flex items-center gap-2">
-                        <span className="flex items-center justify-center w-6 h-6 rounded-full bg-muted text-muted-foreground text-xs font-bold">3</span>
-                        <h3 className="text-lg font-semibold">Interactive Predict</h3>
-                      </div>
-                      <p className="text-sm text-muted-foreground -mt-2">
-                        {model.predictive
-                          ? 'Adjust input features and watch the model traverse to a prediction with animated highlighting.'
-                          : 'Interactive prediction traversal is coming soon for this model type.'}
-                      </p>
-                      <Card className="w-full p-0 border-border bg-card overflow-hidden">
-                        <div className="w-full min-h-[500px] bg-background overflow-hidden relative">
-                          <WebComponentWrapper
-                            component={model.predictive || model.nonPredictive}
-                            model={modelData}
-                          />
-                        </div>
-                      </Card>
-                    </div>
-
-                    {/* 4. Predictive Code */}
-                    <div className="flex flex-col gap-4">
-                      <div className="flex items-center gap-2">
-                        <span className="flex items-center justify-center w-6 h-6 rounded-full bg-muted text-muted-foreground text-xs font-bold">4</span>
-                        <h3 className="text-lg font-semibold">Predictive Code</h3>
-                      </div>
-                      <CodeBlock tabs={getCodeSnippet(model.predictive || model.nonPredictive)} />
-                    </div>
-                  </div>
+                  <ComponentShowcase
+                    model={model}
+                    modelData={modelsData[model.id]}
+                    Icon={Icon}
+                  />
                 </section>
               );
             })}

@@ -6,10 +6,8 @@ import Link from 'next/link'
 import { Eye, SearchCode, Sparkles, LayoutDashboard } from 'lucide-react'
 import { Button } from '@/components/8starlabs-ui/button'
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { ThemeToggle } from '@/components/ThemeToggle'
 import { LogoText } from '@/components/LogoText'
 import { Github } from '@/components/GithubIcon'
-import { FlipTextBoard } from '@/components/FlipTextBoard'
 
 function FadeSection({ children, className = '' }: { children: React.ReactNode, className?: string }) {
   return (
@@ -56,7 +54,6 @@ export default function Page() {
           <LogoText text="{skjson-vsl}" />
         </h3>
         <div className="flex items-center gap-4">
-          <ThemeToggle />
         </div>
       </header>
 
@@ -65,29 +62,29 @@ export default function Page() {
       >
         {/* 1. Hero Section */}
         <FadeSection className="gap-6 mt-8">
-          <motion.h1
-            initial={{ y: -100, opacity: 0, scale: 1.2 }}
-            animate={{ y: 0, opacity: 1, scale: 1 }}
-            transition={{ type: "spring", bounce: 0.5, duration: 0.8 }}
-            className="text-7xl sm:text-9xl font-black tracking-tighter text-center"
-            style={{ textShadow: '0px 20px 30px rgba(0,0,0,0.5)' }}
-          >
-            <LogoText text="{skjson-vsl}" />
-          </motion.h1>
+          <div className="relative inline-block">
+            <motion.h1
+              initial={{ y: -50, opacity: 0, scale: 1.1 }}
+              animate={{ y: 0, opacity: 1, scale: 1 }}
+              transition={{ type: "spring", bounce: 0.5, duration: 0.8 }}
+              className="text-7xl sm:text-9xl font-black tracking-tighter text-center"
+              style={{ textShadow: '0px 20px 30px rgba(0,0,0,0.8)' }}
+            >
+              <LogoText text="{skjson-vsl}" />
+            </motion.h1>
 
-          <div className="flex flex-col items-center mt-4 min-h-[100px] sm:min-h-[140px] justify-center relative w-full">
-            <h1 className="sr-only">
-              Visualize skjson models in the browser.
-            </h1>
-            <FlipTextBoard phrases={[
-              "Visualize models.",
-              "React components.",
-              "No backend needed."
-            ]} />
+            {/* <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3, duration: 0.8 }}
+              className="absolute right-4 sm:right-6 -bottom-6 text-sm sm:text-lg font-bold tracking-tight text-foreground"
+            >
+              <span className="animate-vsl-gradient font-black">Visualise</span> your models
+            </motion.h2> */}
           </div>
 
           <p className="text-xl text-muted-foreground max-w-2xl text-center mt-4 normal-case">
-            Beautiful, interactive visualizations for your scikit-learn models exported via skjson. Powered by Lit Web Components.
+            Beautiful, interactive visualizations for your scikit-learn models.
           </p>
 
           <div className="flex gap-4 mt-2 mb-4 justify-center">
@@ -105,9 +102,9 @@ export default function Page() {
             </a>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-4 mt-4 w-[90%] sm:w-full max-w-3xl mx-auto justify-center">
+          <div className="flex flex-col sm:flex-row gap-4 mt-6 w-[90%] sm:w-full max-w-3xl mx-auto justify-center">
             <Link href="/components" className="flex-1">
-              <Button size="lg" className="w-full h-14 text-lg" withArrow>
+              <Button size="lg" className="w-full h-14 text-lg btn-rainbow-hover border-border border" withArrow>
                 Component Playground
               </Button>
             </Link>
@@ -124,7 +121,7 @@ export default function Page() {
             <FeatureCard icon={LayoutDashboard} title="Fully Customizable" desc="Matches your application's theme using standard CSS variables." />
           </div>
         </FadeSection>
-        
+
       </main>
 
       {/* Footer */}

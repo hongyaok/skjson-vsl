@@ -52,7 +52,7 @@ export function CodeBlock({ tabs, className = "" }: CodeBlockProps) {
   };
 
   return (
-    <div className={`rounded-xl border border-border bg-card overflow-hidden flex flex-col ${className}`}>
+    <div className={`overflow-hidden flex flex-col ${className || 'rounded-xl border border-border bg-card'}`}>
       <div className="flex items-center justify-between px-4 py-2 border-b border-border bg-muted/30">
         <div className="flex items-center gap-2">
           {tabs.map((tab, idx) => (
@@ -78,7 +78,7 @@ export function CodeBlock({ tabs, className = "" }: CodeBlockProps) {
           {copied ? 'Copied!' : 'Copy'}
         </button>
       </div>
-      <div className="p-4 overflow-x-auto text-sm font-mono text-muted-foreground bg-[#0d1117] dark:bg-[#0d1117] text-[#e6edf3]">
+      <div className="flex-1 p-4 overflow-x-auto text-sm font-mono text-muted-foreground bg-[#0d1117] dark:bg-[#0d1117] text-[#e6edf3]">
         <pre className="whitespace-pre-wrap break-all normal-case">
           <code>
             {tabs[activeTab].code}

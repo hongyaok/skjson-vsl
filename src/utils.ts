@@ -35,11 +35,11 @@ export function isLeaf(node: TreeNode) {
   return node.feature === -2;
 }
 
-export function computeTreeLayout(nodes: TreeNode[]): { layoutNodes: LayoutNode[], edges: LayoutEdge[] } {
+export function computeTreeLayout(nodes: TreeNode[], nodeSize: number = 140): { layoutNodes: LayoutNode[], edges: LayoutEdge[] } {
   const layoutNodes: LayoutNode[] = [];
   const edges: LayoutEdge[] = [];
-  const NODE_Y_GAP = 100;
-  const MIN_X_GAP = 70;
+  const NODE_Y_GAP = nodeSize + 40;
+  const MIN_X_GAP = nodeSize + 20;
 
   let xCounter = 0;
 
