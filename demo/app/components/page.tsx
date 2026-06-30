@@ -284,6 +284,9 @@ export default function ComponentsPage() {
           </h3>
         </Link>
         <div className="flex items-center gap-3">
+          <Link href="/try" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors hidden sm:block">
+            Try It
+          </Link>
           <a href="https://github.com/hongyaok/skjson-vsl" target="_blank" rel="noreferrer" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors hidden sm:block">
             GitHub
           </a>

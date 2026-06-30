@@ -137,6 +137,9 @@ export default function Page() {
           <Link href="/components" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors hidden sm:block">
             Playground
           </Link>
+          <Link href="/try" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors hidden sm:block">
+            Try It
+          </Link>
           <a href="https://github.com/hongyaok/skjson-vsl" target="_blank" rel="noreferrer">
             <Button variant="ghost" size="icon-sm" className="text-muted-foreground">
               <Github className="w-4 h-4" />
