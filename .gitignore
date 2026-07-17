@@ -33,3 +33,5 @@ logs
 *.sln
 *.sw?
 .DS_Store
+.superpowers/
+docs/

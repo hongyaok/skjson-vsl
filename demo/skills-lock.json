@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "publish-npm-package": {
+      "source": "yigitkonur/skills-by-yigitkonur",
+      "sourceType": "github",
+      "skillPath": "skills/publish-npm-package/SKILL.md",
+      "computedHash": "34e5b371fe1989c7d96b25c9d060cfd2d9fe5906d3768dca482c446240c8adcc"
+    }
+  }
+}

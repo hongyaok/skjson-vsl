@@ -4,6 +4,7 @@ export { SkjsonGradientBoosting, SkjsonGradientBoostingPredict } from './compone
 export { SkjsonLinearModel } from './components/LinearModelVis';
 export * from './components/LinearModelVis';
 export { SkjsonModelVisualizer } from './components/ModelVisualizer';
+export { DecisionTreeFlashcards } from './components/DecisionTreeFlashcards';
 
 export function register() {
   console.log('skjson-vsl web components registered');

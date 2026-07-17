@@ -85,14 +85,18 @@ import modelData from './${componentName.replace('skjson-', '')}.json';
 
 const ICON_MAP: Record<string, React.ElementType> = {
   decision_tree: TreeDeciduous,
+  decision_tree_flashcards: Layers,
   random_forest: GitFork,
+  random_forest_flashcards: GitFork,
   gradient_boosting: TrendingUp,
   linear_model: LineChart,
 };
 
 const ACCENT_MAP: Record<string, string> = {
   decision_tree: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20',
+  decision_tree_flashcards: 'text-pink-400 bg-pink-500/10 border-pink-500/20',
   random_forest: 'text-blue-400 bg-blue-500/10 border-blue-500/20',
+  random_forest_flashcards: 'text-sky-400 bg-sky-500/10 border-sky-500/20',
   gradient_boosting: 'text-amber-400 bg-amber-500/10 border-amber-500/20',
   linear_model: 'text-violet-400 bg-violet-500/10 border-violet-500/20',
 };
@@ -251,11 +255,25 @@ export default function ComponentsPage() {
       predictive: 'skjson-decision-tree-predict',
     },
     {
+      id: 'decision_tree_flashcards',
+      title: 'Decision Tree Flashcards',
+      description: 'An interactive, step-by-step flashcard wizard visualizing decision tree inference. Flip through cards and make choices based on feature thresholds.',
+      nonPredictive: 'skjson-decision-tree-flashcards',
+      predictive: null,
+    },
+    {
       id: 'random_forest',
       title: 'Random Forest',
       description: 'Explore individual trees in a Random Forest ensemble. Switch between estimators to understand how the forest votes.',
       nonPredictive: 'skjson-random-forest',
       predictive: 'skjson-random-forest-predict',
+    },
+    {
+      id: 'random_forest_flashcards',
+      title: 'Random Forest Flashcards',
+      description: 'An interactive flashcard wizard visualizing individual decision trees in the forest ensemble. Switch between voters using navigation controls.',
+      nonPredictive: 'skjson-decision-tree-flashcards',
+      predictive: null,
     },
     {
       id: 'gradient_boosting',
@@ -354,7 +372,13 @@ export default function ComponentsPage() {
                 >
                   <ComponentShowcase
                     model={model}
-                    modelData={modelsData[model.id]}
+                    modelData={
+                      model.id === 'decision_tree_flashcards'
+                        ? modelsData['decision_tree']
+                        : model.id === 'random_forest_flashcards'
+                        ? modelsData['random_forest']
+                        : modelsData[model.id]
+                    }
                     Icon={Icon}
                     modelId={model.id}
                   />

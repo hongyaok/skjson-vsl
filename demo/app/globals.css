@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 @layer base {
-  :root {
+  :root, .dark {
     --background: 220 13% 10%;
     --foreground: 210 20% 98%;
     --card: 220 13% 14%;
@@ -24,27 +24,35 @@
     --input: 220 13% 25%;
     --ring: 210 100% 60%;
     --radius: 0.5rem;
+    
+    --bg-grad-1: 220 13% 10%;
+    --bg-grad-2: 220 13% 15%;
+    --bg-grad-3: 220 13% 12%;
   }
-}
 
-.showcase-light {
-  --background: 210 20% 98%;
-  --foreground: 215 15% 15%;
-  --card: 210 20% 96%;
-  --card-foreground: 215 15% 15%;
-  --popover: 210 20% 96%;
-  --popover-foreground: 215 15% 15%;
-  --primary: 215 15% 25%;
-  --primary-foreground: 210 20% 98%;
-  --secondary: 210 20% 90%;
-  --secondary-foreground: 215 15% 15%;
-  --muted: 210 20% 90%;
-  --muted-foreground: 215 15% 45%;
-  --accent: 210 20% 90%;
-  --accent-foreground: 215 15% 15%;
-  --border: 210 20% 80%;
-  --input: 210 20% 80%;
-  --ring: 215 15% 15%;
+  .light, .showcase-light {
+    --background: 210 20% 98%;
+    --foreground: 215 15% 15%;
+    --card: 210 20% 96%;
+    --card-foreground: 215 15% 15%;
+    --popover: 210 20% 96%;
+    --popover-foreground: 215 15% 15%;
+    --primary: 215 15% 25%;
+    --primary-foreground: 210 20% 98%;
+    --secondary: 210 20% 90%;
+    --secondary-foreground: 215 15% 15%;
+    --muted: 210 20% 90%;
+    --muted-foreground: 215 15% 45%;
+    --accent: 210 20% 90%;
+    --accent-foreground: 215 15% 15%;
+    --border: 210 20% 80%;
+    --input: 210 20% 80%;
+    --ring: 215 15% 15%;
+    
+    --bg-grad-1: 210 20% 98%;
+    --bg-grad-2: 210 20% 94%;
+    --bg-grad-3: 210 20% 96%;
+  }
 }
 
 @layer base {
@@ -52,8 +60,8 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
-    background-image: linear-gradient(135deg, hsl(220 13% 10%) 0%, hsl(220 13% 15%) 50%, hsl(220 13% 12%) 100%);
+    @apply bg-background text-foreground transition-colors duration-300;
+    background-image: linear-gradient(135deg, hsl(var(--bg-grad-1)) 0%, hsl(var(--bg-grad-2)) 50%, hsl(var(--bg-grad-3)) 100%);
     background-attachment: fixed;
   }
 }

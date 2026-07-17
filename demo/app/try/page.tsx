@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { ArrowLeft, UploadCloud, RefreshCcw } from 'lucide-react';
@@ -39,13 +39,25 @@ export default function TryItPage() {
   };
 
   const getComponentName = (modelType: string) => {
-    // Determine the component name. Default to predict component if possible
-    if (modelType === 'linear_model') return 'skjson-linear-model';
-    return `skjson-${modelType.replace(/_/g, '-')}-predict`;
+    const type = modelType.toLowerCase();
+    if (type.includes('linear') || type.includes('logistic') || type.includes('ridge') || type.includes('lasso')) {
+      return 'skjson-linear-model';
+    }
+    if (type.includes('randomforest')) {
+      return 'skjson-random-forest-predict';
+    }
+    if (type.includes('gradientboosting')) {
+      return 'skjson-gradient-boosting-predict';
+    }
+    if (type.includes('decisiontree')) {
+      return 'skjson-decision-tree-predict';
+    }
+    // Fallback based on generic parsing
+    return `skjson-${modelType.toLowerCase().replace(/_/g, '-')}-predict`;
   };
 
   return (
-    <div className="min-h-screen text-foreground flex flex-col bg-background normal-case">
+    <div className="min-h-screen text-foreground flex flex-col bg-background normal-case transition-colors duration-300">
       {/* Header */}
       <header className="w-full px-6 py-4 fixed top-0 left-0 right-0 flex justify-between items-center z-50 bg-background/80 backdrop-blur-md border-b border-border/50">
         <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
